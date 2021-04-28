@@ -1,10 +1,10 @@
-title: game title
-description: game description
+title: PolyBlit
+description: A low-poly demo.
 author: ThePythonator
 splash:
   file: assets/no-image.png
 icon:
   file: assets/no-icon.png
 version: v0.0.1
-category: none
-url: https://github.com/ThePythonator/32blit-boilerplate
+category: demo
+url: https://github.com/ThePythonator/PolyBlit

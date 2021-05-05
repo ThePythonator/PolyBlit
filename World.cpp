@@ -13,8 +13,8 @@ namespace CWire3DWorld {
 
 	void World::update() {
 		// Calculate chunks we need to be loaded / unloaded
-		int center_x = camera->get_position()->x / chunk_size;
-		int center_z = camera->get_position()->z / chunk_size;
+		int center_x = camera->get_position().x / chunk_size;
+		int center_z = camera->get_position().z / chunk_size;
 
 		std::vector<int2> chunks_to_load;
 

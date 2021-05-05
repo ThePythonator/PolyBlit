@@ -8,6 +8,8 @@ using namespace linalg::aliases;
 namespace CWire3DUtilities {
 
 	const float pi = 3.14159265f;
+	const float half_pi = pi / 2.0f;
+
 	const float to_rad = pi / 180;
 	const float to_deg = 180 / pi;
 

@@ -12,6 +12,12 @@ namespace CWire3DEntities {
 		f = display_size.x / (2 * tan(this->fov));
 
 		this->flip_y = flip_y;
+
+		clip = float2{ 0.0f, 0.0f };
+	}
+
+	void Camera::set_clip(float2 clip) {
+		this->clip = clip;
 	}
 
 	void Camera::update_rotation() {
@@ -59,8 +65,20 @@ namespace CWire3DEntities {
 		return float3{ x, y, rotated.z };
 	}
 
-	float3* Camera::get_position() {
-		return &position;
+	float3 Camera::get_position() {
+		return position;
+	}
+
+	float3 Camera::get_angle() {
+		return angle;
+	}
+
+	void Camera::set_position(float3 position) {
+		this->position = position;
+	}
+
+	void Camera::set_angle(float3 angle) {
+		this->angle = angle;
 	}
 
 	bool Camera::should_clip(float z_depth) {

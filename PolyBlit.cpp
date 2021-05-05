@@ -37,10 +37,10 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
 
             float h1, h2, h3, h4;
 
-            h1 = (perlin.accumulatedOctaveNoise2D_0_1(p1->position.x / 32.0f, p1->position.z / 32.0f, 1) - 0.3f) * 16;
-            h2 = (perlin.accumulatedOctaveNoise2D_0_1(p2->position.x / 32.0f, p2->position.z / 32.0f, 1) - 0.3f) * 16;
-            h3 = (perlin.accumulatedOctaveNoise2D_0_1(p3->position.x / 32.0f, p3->position.z / 32.0f, 1) - 0.3f) * 16;
-            h4 = (perlin.accumulatedOctaveNoise2D_0_1(p4->position.x / 32.0f, p4->position.z / 32.0f, 1) - 0.3f) * 16;
+            h1 = (perlin.accumulatedOctaveNoise2D_0_1(p1->position.x / 32.0f, p1->position.z / 32.0f, 1) - 0.4f) * 16;
+            h2 = (perlin.accumulatedOctaveNoise2D_0_1(p2->position.x / 32.0f, p2->position.z / 32.0f, 1) - 0.4f) * 16;
+            h3 = (perlin.accumulatedOctaveNoise2D_0_1(p3->position.x / 32.0f, p3->position.z / 32.0f, 1) - 0.4f) * 16;
+            h4 = (perlin.accumulatedOctaveNoise2D_0_1(p4->position.x / 32.0f, p4->position.z / 32.0f, 1) - 0.4f) * 16;
 
             h1 = std::max(0.0f, h1);
             h2 = std::max(0.0f, h2);
@@ -265,10 +265,12 @@ void update(uint32_t time) {
         camera.move(float3{ 0.0f, 0.1f, 0.0f });
     }
 
-    if (buttonStates.A) {
-        camera.rotate(float3{ 0.0f, 0.01f, 0.0f });
+    if (joystick.x < -0.1f || joystick.x > 0.1f) {
+        camera.rotate(float3{ 0.0f, -joystick.x / 40.0f, 0.0f});
     }
-    if (buttonStates.Y) {
-        camera.rotate(float3{ 0.0f, -0.01f, 0.0f });
+
+    if (joystick.y < -0.1f || joystick.y > 0.1f) {
+        float3 angle = camera.get_angle();
+        camera.set_angle(float3{ std::min(CWire3DUtilities::half_pi, std::max(-CWire3DUtilities::half_pi, angle.x + joystick.y / 40.0f)), angle.y , angle.z });
     }
 }

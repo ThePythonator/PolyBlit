@@ -33,7 +33,7 @@ namespace CWire3DEntities {
 	float3 Camera::project_point(float3 point, bool offset_to_center, bool clip_sides) {
 		float3 rotated = mul(rotation_matrix, (point - position));
 
-		if (rotated.z <= 0.0f) {
+		if (rotated.z <= 0.0f || should_clip(rotated.z)) {
 			return float3{ 0.0f, 0.0f, 0.0f };
 		}
 
@@ -61,5 +61,9 @@ namespace CWire3DEntities {
 
 	float3* Camera::get_position() {
 		return &position;
+	}
+
+	bool Camera::should_clip(float z_depth) {
+		return false; // todo
 	}
 }

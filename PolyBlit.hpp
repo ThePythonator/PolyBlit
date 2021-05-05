@@ -2,6 +2,7 @@
 
 #include "32blit.hpp"
 #include "linalg.h"
+#include "perlin.hpp"
 
 #include "Camera.hpp"
 #include "World.hpp"

@@ -9,6 +9,8 @@ CWire3DWorld::World world = CWire3DWorld::World(&camera, 4, 6);
 
 ButtonStates buttonStates = { 0 };
 
+PerlinNoise::PerlinNoise perlin = PerlinNoise::PerlinNoise(31415);
+
 CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
     std::vector<CWire3DWorld::Triangle> triangles;
 
@@ -32,6 +34,30 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
             p2->position = float3{ (float)(chunk_position.x * world.chunk_size + x + 1), 0.0f, (float)(chunk_position.y * world.chunk_size + z) };
             p3->position = float3{ (float)(chunk_position.x * world.chunk_size + x), 0.0f, (float)(chunk_position.y * world.chunk_size + z + 1) };
             p4->position = float3{ (float)(chunk_position.x * world.chunk_size + x + 1), 0.0f, (float)(chunk_position.y * world.chunk_size + z + 1) };
+
+            float h1, h2, h3, h4;
+
+            h1 = (perlin.accumulatedOctaveNoise2D_0_1(p1->position.x / 32.0f, p1->position.z / 32.0f, 1) - 0.3f) * 16;
+            h2 = (perlin.accumulatedOctaveNoise2D_0_1(p2->position.x / 32.0f, p2->position.z / 32.0f, 1) - 0.3f) * 16;
+            h3 = (perlin.accumulatedOctaveNoise2D_0_1(p3->position.x / 32.0f, p3->position.z / 32.0f, 1) - 0.3f) * 16;
+            h4 = (perlin.accumulatedOctaveNoise2D_0_1(p4->position.x / 32.0f, p4->position.z / 32.0f, 1) - 0.3f) * 16;
+
+            h1 = std::max(0.0f, h1);
+            h2 = std::max(0.0f, h2);
+            h3 = std::max(0.0f, h3);
+            h4 = std::max(0.0f, h4);
+
+            if (!h1 && !h2 && !h3) {
+                t1.colour = byte3{ (uint8_t)(rand() % 20), (uint8_t)(rand() % 40), (uint8_t)(230 + (rand() % 25)) };
+            }
+            if (!h2 && !h3 && !h4) {
+                t2.colour = byte3{ (uint8_t)(rand() % 30), (uint8_t)(rand() % 50), (uint8_t)(220 + (rand() % 30)) };
+            }
+
+            p1->position.y = h1;
+            p2->position.y = h2;
+            p3->position.y = h3;
+            p4->position.y = h4;
 
             t1.p1 = p1;
             t1.p2 = p2;

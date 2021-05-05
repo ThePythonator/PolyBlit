@@ -21,6 +21,8 @@ namespace CWire3DEntities {
 
 		float3* get_position();
 
+		bool should_clip(float z_depth);
+
 	protected:
 		uint8_t fov;
 		float f;

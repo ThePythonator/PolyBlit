@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "32blit.hpp"
 #include "linalg.h"
 #include "perlin.hpp"

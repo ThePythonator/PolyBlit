@@ -10,6 +10,8 @@ namespace CWire3DEntities {
 
 		this->fov = CWire3DUtilities::to_radians(fov);
 		f = display_size.x / (2 * tan(this->fov));
+
+		this->flip_y = flip_y;
 	}
 
 	void Camera::update_rotation() {
@@ -49,10 +51,15 @@ namespace CWire3DEntities {
 
 		if (clip_sides) {
 			if (x < -display_size.x || x > display_size.x * 2 || y < -display_size.y || y > display_size.y * 2) {
+				//printf("%f %f %f\n", x, y, rotated.z);
 				return float3{ 0.0f, 0.0f, 0.0f };
 			}
 		}
 
 		return float3{ x, y, rotated.z };
+	}
+
+	float3* Camera::get_position() {
+		return &position;
 	}
 }

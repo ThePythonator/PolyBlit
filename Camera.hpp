@@ -17,7 +17,9 @@ namespace CWire3DEntities {
 		void translate(float3 amount);
 		void move(float3 amount);
 
-		float3 project_point(float3 point, bool offset_to_center = false, bool clip_sides = true);
+		float3 project_point(float3 point, bool offset_to_center = true, bool clip_sides = false);//true
+
+		float3* get_position();
 
 	protected:
 		uint8_t fov;

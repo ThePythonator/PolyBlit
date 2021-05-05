@@ -37,10 +37,10 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
 
             float h1, h2, h3, h4;
 
-            h1 = ((float)perlin.accumulatedOctaveNoise2D_0_1((double)p1->position.x / 32.0f, (double)p1->position.z / 32.0f, 1) - 0.4f) * 16;
-            h2 = ((float)perlin.accumulatedOctaveNoise2D_0_1((double)p2->position.x / 32.0f, (double)p2->position.z / 32.0f, 1) - 0.4f) * 16;
-            h3 = ((float)perlin.accumulatedOctaveNoise2D_0_1((double)p3->position.x / 32.0f, (double)p3->position.z / 32.0f, 1) - 0.4f) * 16;
-            h4 = ((float)perlin.accumulatedOctaveNoise2D_0_1((double)p4->position.x / 32.0f, (double)p4->position.z / 32.0f, 1) - 0.4f) * 16;
+            h1 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p1->position.x / 32.0, p1->position.z / 32.0, 1) - 0.4f) * 16;
+            h2 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p2->position.x / 32.0, p2->position.z / 32.0, 1) - 0.4f) * 16;
+            h3 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p3->position.x / 32.0, p3->position.z / 32.0, 1) - 0.4f) * 16;
+            h4 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p4->position.x / 32.0, p4->position.z / 32.0, 1) - 0.4f) * 16;
 
             h1 = std::max(0.0f, h1);
             h2 = std::max(0.0f, h2);

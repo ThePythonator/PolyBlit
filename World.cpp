@@ -20,19 +20,18 @@ namespace CWire3DWorld {
 
 		for (int x = -chunk_spawn_distance; x < chunk_spawn_distance + 1; x++) {
 			for (int z = -chunk_spawn_distance; z < chunk_spawn_distance + 1; z++) {
-				int2 chunk_position{ center_x + x, center_z + z };
-
-				if (!std::count_if(loaded_chunks.begin(), loaded_chunks.end(), [chunk_position](Chunk chunk) { return chunk.chunk_position == chunk_position; })) {
-					// Need to load chunk
-					chunks_to_load.push_back(chunk_position);
-				}
+				chunks_to_load.push_back(int2{ center_x + x, center_z + z });
 			}
 		}
 
 		for (int2 chunk_position : chunks_to_load) {
-			generate_chunk(chunk_position);
+			if (!std::count_if(loaded_chunks.begin(), loaded_chunks.end(), [chunk_position](Chunk chunk) { return chunk.chunk_position == chunk_position; })) {
+				// Chunk isn't in loaded_chunks, need to load chunk
+				generate_chunk(chunk_position);
+			}
 		}
 
+		// Remove chunks which are too far away
 		std::remove_if(loaded_chunks.begin(), loaded_chunks.end(), [chunks_to_load](Chunk chunk) { return !std::count_if(chunks_to_load.begin(), chunks_to_load.end(), [chunk](int2 chunk_position) { return chunk.chunk_position == chunk_position; }); });
 
 		// Remove all duplicate nodes generated from generate_chunk()

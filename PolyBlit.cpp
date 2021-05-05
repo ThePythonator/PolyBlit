@@ -5,7 +5,7 @@
 uint2 display_size{ 320, 240 };
 
 CWire3DEntities::Camera camera = CWire3DEntities::Camera(display_size);
-CWire3DWorld::World world = CWire3DWorld::World(&camera, 4, 4);
+CWire3DWorld::World world = CWire3DWorld::World(&camera, 4, 6);
 
 ButtonStates buttonStates = { 0 };
 
@@ -232,10 +232,17 @@ void update(uint32_t time) {
         camera.move(float3{ -0.1f, 0.0f, 0.0f });
     }
 
-    if (buttonStates.A) {
-        camera.move(float3{ 0.0f, 0.1f, 0.0f });
+    if (buttonStates.X) {
+        camera.move(float3{ 0.0f, -0.1f, 0.0f });
     }
     if (buttonStates.B) {
-        camera.move(float3{ 0.0f, -0.1f, 0.0f });
+        camera.move(float3{ 0.0f, 0.1f, 0.0f });
+    }
+
+    if (buttonStates.A) {
+        camera.rotate(float3{ 0.0f, 0.01f, 0.0f });
+    }
+    if (buttonStates.Y) {
+        camera.rotate(float3{ 0.0f, -0.01f, 0.0f });
     }
 }

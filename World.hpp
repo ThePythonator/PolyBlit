@@ -1,8 +1,9 @@
 #pragma once
 
 #include "linalg.h"
-//#include <math.h>
+
 #include <algorithm>
+#include <vector>
 
 #include "Camera.hpp"
 

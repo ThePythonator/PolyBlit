@@ -3,7 +3,9 @@
 #include <vector>
 
 // memory stats
+#ifdef TARGET_32BLIT_HW
 #include <malloc.h>
+#endif
 
 #include "32blit.hpp"
 #include "linalg.h"

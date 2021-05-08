@@ -5,7 +5,7 @@
 uint2 display_size{ 320, 240 };
 
 CWire3DEntities::Camera camera = CWire3DEntities::Camera(display_size);
-CWire3DWorld::World world = CWire3DWorld::World(&camera, 8, 4);
+CWire3DWorld::World world = CWire3DWorld::World(&camera, 8, 3); // the product of the last two parameters must not be exceed 48, otherwise it is likely to be unplayable.
 
 ButtonStates buttonStates = { 0 };
 
@@ -23,11 +23,6 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
             CWire3DWorld::Node* p3 = new CWire3DWorld::Node();
             CWire3DWorld::Node* p4 = new CWire3DWorld::Node();
 
-            /*p1->position = float3{ (float)(chunk_position.x * world.chunk_size + x), 0.3f * sinf(x), (float)(chunk_position.y * world.chunk_size + z) };
-            p2->position = float3{ (float)(chunk_position.x * world.chunk_size + x + 1), 0.3f * sinf(x + 1), (float)(chunk_position.y * world.chunk_size + z) };
-            p3->position = float3{ (float)(chunk_position.x * world.chunk_size + x), 0.3f * sinf(x), (float)(chunk_position.y * world.chunk_size + z + 1) };
-            p3->position = float3{ (float)(chunk_position.x * world.chunk_size + x + 1), 0.3f * sinf(x + 1), (float)(chunk_position.y * world.chunk_size + z + 1) };*/
-
             p1->position = float3{ (float)(chunk_position.x * world.chunk_size + x), 0.0f, (float)(chunk_position.y * world.chunk_size + z) };
             p2->position = float3{ (float)(chunk_position.x * world.chunk_size + x + 1), 0.0f, (float)(chunk_position.y * world.chunk_size + z) };
             p3->position = float3{ (float)(chunk_position.x * world.chunk_size + x), 0.0f, (float)(chunk_position.y * world.chunk_size + z + 1) };
@@ -35,10 +30,10 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
 
             float h1, h2, h3, h4;
 
-            h1 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p1->position.x / 32.0, p1->position.z / 32.0, 1) - 0.4f) * 16;
-            h2 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p2->position.x / 32.0, p2->position.z / 32.0, 1) - 0.4f) * 16;
-            h3 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p3->position.x / 32.0, p3->position.z / 32.0, 1) - 0.4f) * 16;
-            h4 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p4->position.x / 32.0, p4->position.z / 32.0, 1) - 0.4f) * 16;
+            h1 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p1->position.x / 32.0, p1->position.z / 32.0, 1) - 0.4f) * 24.0f;
+            h2 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p2->position.x / 32.0, p2->position.z / 32.0, 1) - 0.4f) * 24.0f;
+            h3 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p3->position.x / 32.0, p3->position.z / 32.0, 1) - 0.4f) * 24.0f;
+            h4 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p4->position.x / 32.0, p4->position.z / 32.0, 1) - 0.4f) * 24.0f;
 
             h1 = std::max(0.0f, h1);
             h2 = std::max(0.0f, h2);
@@ -61,14 +56,14 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
             float c1 = h1 + h2 + h3;
             float c2 = h2 + h3 + h4;
 
-            t1.colour = byte3{ (uint8_t)(rand() % 20 + 10), (uint8_t)(220 + c1), (uint8_t)(rand() % 20 + 15) };
-            t2.colour = byte3{ (uint8_t)(rand() % 20 + 10), (uint8_t)(230 + c2), (uint8_t)(rand() % 20 + 15) };
+            t1.colour = byte3{ (uint8_t)(rand() % 20 + 10), (uint8_t)(std::min(255.0f, 220.0f + c1)), (uint8_t)(c1 + 20) };
+            t2.colour = byte3{ (uint8_t)(rand() % 20 + 10), (uint8_t)(std::min(255.0f, 230.0f + c2)), (uint8_t)(c2 + 25) };
 
             if (!h1 && !h2 && !h3) {
-                t1.colour = byte3{ (uint8_t)(rand() % 10 + 5), (uint8_t)(rand() % 10 + 30), (uint8_t)(240 + c1) };
+                t1.colour = byte3{ (uint8_t)(rand() % 10 + 5), (uint8_t)(rand() % 10 + 30), (uint8_t)(240) };
             }
             if (!h2 && !h3 && !h4) {
-                t2.colour = byte3{ (uint8_t)(rand() % 10 + 5), (uint8_t)(rand() % 10 + 35), (uint8_t)(220 + c2) };
+                t2.colour = byte3{ (uint8_t)(rand() % 10 + 5), (uint8_t)(rand() % 10 + 35), (uint8_t)(220) };
             }
 
             triangles.push_back(t1);
@@ -84,11 +79,9 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
 }
 
 void custom_triangle_renderer(CWire3DWorld::Triangle triangle) {
-    //printf("%f\n", triangle.p1->projected_position.z);
     if (triangle.p1->projected_position.z > 0.0f && triangle.p2->projected_position.z > 0.0f && triangle.p3->projected_position.z > 0.0f) {
-        //printf("tri");
         screen.pen = Pen(triangle.colour.x, triangle.colour.y, triangle.colour.z);
-        //printf("%f, %f\n", triangle.p1->projected_position.x, triangle.p1->projected_position.y);
+
         screen.triangle(
             Point(triangle.p1->projected_position.x, triangle.p1->projected_position.y),
             Point(triangle.p2->projected_position.x, triangle.p2->projected_position.y),
@@ -110,6 +103,7 @@ void init() {
     world.set_triangle_renderer(custom_triangle_renderer);
 
     camera.translate(float3{ 0.0f, 4.0f, 0.0f });
+    camera.set_clip(float2{ 0.05f, 32.0f });
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -124,20 +118,29 @@ void render(uint32_t time) {
     // clear the screen -- screen is a reference to the frame buffer and can be used to draw all things with the 32blit
     screen.clear();
 
-    // draw some text at the top of the screen
     screen.alpha = 255;
     screen.mask = nullptr;
-    /*screen.pen = Pen(255, 255, 255);
-    screen.rectangle(Rect(0, 0, 320, 14));
-    screen.triangle(Point(105, 105), Point(125, 115), Point(115, 120));
-    screen.pen = Pen(0, 0, 0);
-    screen.text("Hello 32blit!", minimal_font, Point(5, 4));*/
 
     world.render();
 
-    screen.pen = Pen(100, 140, 200);
 
-    //screen.polygon();
+#ifdef TARGET_32BLIT_HW
+    // memory stats
+    extern char _sbss, _end, __ltdc_start;
+
+    auto static_used = &_end - &_sbss;
+    auto heap_total = &__ltdc_start - &_end;
+    auto heap_used = mallinfo().uordblks;
+
+    auto total_ram = static_used + heap_total;
+
+    screen.pen = { 255, 255, 255 };
+    char buf[100];
+    snprintf(buf, sizeof(buf), "Mem: %i + %i / %i", static_used, heap_used, total_ram);
+    screen.text(buf, minimal_font, { 0, 0 }, true, TextAlign::center_center);
+#endif
+
+    screen.pen = Pen(100, 140, 200);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -272,7 +275,7 @@ void update(uint32_t time) {
 
     if (joystick.y < -0.1f || joystick.y > 0.1f) {
         float3 angle = camera.get_angle();
-        camera.set_angle(float3{ std::min(CWire3DUtilities::half_pi, std::max(-CWire3DUtilities::half_pi, angle.x + joystick.y / 40.0f)), angle.y , angle.z });
+        camera.set_angle(float3{ std::min(CWire3DUtilities::half_pi, std::max(-CWire3DUtilities::half_pi, angle.x - joystick.y / 40.0f)), angle.y , angle.z });
     }
 
     world.update();

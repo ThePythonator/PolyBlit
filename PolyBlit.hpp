@@ -2,6 +2,9 @@
 
 #include <vector>
 
+// memory stats
+#include <malloc.h>
+
 #include "32blit.hpp"
 #include "linalg.h"
 #include "perlin.hpp"

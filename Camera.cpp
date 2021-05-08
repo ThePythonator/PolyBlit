@@ -36,7 +36,7 @@ namespace CWire3DEntities {
 		translate(mul(CWire3DUtilities::get_3d_rot_y(-angle.y), amount));
 	}
 
-	float3 Camera::project_point(float3 point, bool offset_to_center, bool clip_sides) {
+	float3 Camera::project_point(float3 point, bool offset_to_center) {
 		float3 rotated = mul(rotation_matrix, (point - position));
 
 		if (rotated.z <= 0.0f || should_clip(rotated.z)) {
@@ -53,13 +53,6 @@ namespace CWire3DEntities {
 		if (offset_to_center) {
 			x += display_size_half.x;
 			y += display_size_half.y;
-		}
-
-		if (clip_sides) {
-			if (x < -display_size.x || x > display_size.x * 2 || y < -display_size.y || y > display_size.y * 2) {
-				//printf("%f %f %f\n", x, y, rotated.z);
-				return float3{ 0.0f, 0.0f, 0.0f };
-			}
 		}
 
 		return float3{ x, y, rotated.z };
@@ -82,6 +75,14 @@ namespace CWire3DEntities {
 	}
 
 	bool Camera::should_clip(float z_depth) {
-		return false; // todo
+		return !(clip.x < z_depth && z_depth < clip.y);
+	}
+
+	bool Camera::should_clip_sides(float3 p1, float3 p2, float3 p3) {
+		return should_clip_sides(p1.x, p1.y) && should_clip_sides(p2.x, p2.y) && should_clip_sides(p3.x, p3.y);
+	}
+
+	bool Camera::should_clip_sides(float x, float y) {
+		return (x < 0.0f || x > display_size.x || y < 0.0f || y > display_size.y);
 	}
 }

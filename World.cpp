@@ -34,26 +34,27 @@ namespace CWire3DWorld {
 		// Remove chunks which are too far away
 		std::remove_if(loaded_chunks.begin(), loaded_chunks.end(), [chunks_to_load](Chunk chunk) { return !std::count_if(chunks_to_load.begin(), chunks_to_load.end(), [chunk](int2 chunk_position) { return chunk.chunk_position == chunk_position; }); });
 
-		// Remove all duplicate nodes generated from generate_chunk()
-		//loaded_chunks.resize(std::distance(loaded_nodes.begin(), std::unique(loaded_nodes.begin(), loaded_nodes.end(), [](Node* n1, Node* n2) { return n1->position == n2->position; })));
-
-		/*for (Node* node : loaded_nodes) {
-			node->projected_position = camera->project_point(node->position);
-		}*/
 		for (Chunk chunk : loaded_chunks) {
 			for (uint16_t i = 0; i < chunk.triangles.size(); i++) {
 				chunk.triangles[i].p1->projected_position = camera->project_point(chunk.triangles[i].p1->position);
 				chunk.triangles[i].p2->projected_position = camera->project_point(chunk.triangles[i].p2->position);
 				chunk.triangles[i].p3->projected_position = camera->project_point(chunk.triangles[i].p3->position);
-				//printf("%f\n", chunk.triangles[i].p1->projected_position.z);
 			}
 		}
 	}
 
 	void World::render() {
 		if (triangle_renderer) {
+			std::vector<Triangle> all_triangles;
 			for (Chunk chunk : loaded_chunks) {
-				for (Triangle triangle : chunk.triangles) {
+				all_triangles.insert(all_triangles.end(), chunk.triangles.begin(), chunk.triangles.end());
+using namespace linalg::aliases;
+			}
+
+			std::sort(all_triangles.begin(), all_triangles.end(), [&](const Triangle& a, const Triangle& b) {return std::min(length2(camera->get_position() - a.p1->position), std::min(length2(camera->get_position() - a.p2->position), length2(camera->get_position() - a.p3->position))) > std::min(length2(camera->get_position() - b.p1->position), std::min(length2(camera->get_position() - b.p2->position), length2(camera->get_position() - b.p3->position))); });
+
+			for (const Triangle& triangle : all_triangles) {
+				if (!camera->should_clip_sides(triangle.p1->projected_position, triangle.p2->projected_position, triangle.p3->projected_position)) {
 					triangle_renderer(triangle);
 				}
 			}
@@ -64,11 +65,6 @@ namespace CWire3DWorld {
 		if (chunk_generator) {
 			Chunk chunk = chunk_generator(chunk_position);
 			loaded_chunks.push_back(chunk);
-			/*for (const Triangle& triangle : chunk.triangles) {
-				loaded_nodes.push_back(triangle.p1);
-				loaded_nodes.push_back(triangle.p2);
-				loaded_nodes.push_back(triangle.p3);
-			}*/
 		}
 	}
 

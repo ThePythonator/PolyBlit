@@ -19,7 +19,7 @@ namespace CWire3DEntities {
 		void translate(float3 amount);
 		void move(float3 amount);
 
-		float3 project_point(float3 point, bool offset_to_center = true, bool clip_sides = false);//true
+		float3 project_point(float3 point, bool offset_to_center = true);
 
 		float3 get_position();
 		float3 get_angle();
@@ -28,6 +28,8 @@ namespace CWire3DEntities {
 		void set_angle(float3 angle);
 
 		bool should_clip(float z_depth);
+		bool should_clip_sides(float3 p1, float3 p2, float3 p3);
+		bool should_clip_sides(float x, float y);
 
 	protected:
 		uint8_t fov;

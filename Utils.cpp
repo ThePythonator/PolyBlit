@@ -37,9 +37,9 @@ namespace CWire3DUtilities {
 
     float3x3 get_3d_rot(float3 angle) {
         return mul(
-            get_3d_rot_z(angle.z),
+            get_3d_rot_x(angle.x),
             get_3d_rot_y(angle.y),
-            get_3d_rot_x(angle.x)
+            get_3d_rot_z(angle.z)
         );
     }
 

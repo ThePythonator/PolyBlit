@@ -5,7 +5,7 @@
 uint2 display_size{ 320, 240 };
 
 CWire3DEntities::Camera camera = CWire3DEntities::Camera(display_size);
-CWire3DWorld::World world = CWire3DWorld::World(&camera, 4, 6);
+CWire3DWorld::World world = CWire3DWorld::World(&camera, 8, 4);
 
 ButtonStates buttonStates = { 0 };
 
@@ -17,8 +17,6 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
     for (int z = 0; z < world.chunk_size; z++) {
         for (int x = 0; x < world.chunk_size; x++) {
             CWire3DWorld::Triangle t1, t2;
-            t1.colour = byte3{ (uint8_t)(rand() % 40), (uint8_t)(220 + (rand() % 30)), (uint8_t)(rand() % 50) };
-            t2.colour = byte3{ (uint8_t)(rand() % 40), (uint8_t)(230 + (rand() % 25)), (uint8_t)(rand() % 50) };
 
             CWire3DWorld::Node* p1 = new CWire3DWorld::Node();
             CWire3DWorld::Node* p2 = new CWire3DWorld::Node();
@@ -47,13 +45,6 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
             h3 = std::max(0.0f, h3);
             h4 = std::max(0.0f, h4);
 
-            if (!h1 && !h2 && !h3) {
-                t1.colour = byte3{ (uint8_t)(rand() % 20), (uint8_t)(rand() % 40), (uint8_t)(230 + (rand() % 25)) };
-            }
-            if (!h2 && !h3 && !h4) {
-                t2.colour = byte3{ (uint8_t)(rand() % 30), (uint8_t)(rand() % 50), (uint8_t)(220 + (rand() % 30)) };
-            }
-
             p1->position.y = h1;
             p2->position.y = h2;
             p3->position.y = h3;
@@ -66,6 +57,19 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
             t2.p1 = p2;
             t2.p2 = p3;
             t2.p3 = p4;
+
+            float c1 = h1 + h2 + h3;
+            float c2 = h2 + h3 + h4;
+
+            t1.colour = byte3{ (uint8_t)(rand() % 20 + 10), (uint8_t)(220 + c1), (uint8_t)(rand() % 20 + 15) };
+            t2.colour = byte3{ (uint8_t)(rand() % 20 + 10), (uint8_t)(230 + c2), (uint8_t)(rand() % 20 + 15) };
+
+            if (!h1 && !h2 && !h3) {
+                t1.colour = byte3{ (uint8_t)(rand() % 10 + 5), (uint8_t)(rand() % 10 + 30), (uint8_t)(240 + c1) };
+            }
+            if (!h2 && !h3 && !h4) {
+                t2.colour = byte3{ (uint8_t)(rand() % 10 + 5), (uint8_t)(rand() % 10 + 35), (uint8_t)(220 + c2) };
+            }
 
             triangles.push_back(t1);
             triangles.push_back(t2);
@@ -241,9 +245,6 @@ void update(uint32_t time) {
         buttonStates.RIGHT = 0;
     }
 
-    camera.update_rotation();
-    world.update();
-
     if (buttonStates.UP) {
         camera.move(float3{ 0.0f, 0.0f, 0.1f });
     }
@@ -273,4 +274,7 @@ void update(uint32_t time) {
         float3 angle = camera.get_angle();
         camera.set_angle(float3{ std::min(CWire3DUtilities::half_pi, std::max(-CWire3DUtilities::half_pi, angle.x + joystick.y / 40.0f)), angle.y , angle.z });
     }
+
+    world.update();
+    camera.update_rotation();
 }

@@ -3,15 +3,17 @@
 // Globals
 
 #ifdef TARGET_32BLIT_HW
-const uint8_t CHUNK_LOAD_DIST = 2;
+const uint8_t CHUNK_LOAD_DIST = 3;
+const uint8_t CHUNK_SIZE = 4;
 #else
 const uint8_t CHUNK_LOAD_DIST = 4;
+const uint8_t CHUNK_SIZE = 8;
 #endif
 
 uint2 display_size{ 320, 240 };
 
 CWire3DEntities::Camera camera = CWire3DEntities::Camera(display_size);
-CWire3DWorld::World world = CWire3DWorld::World(&camera, 8, CHUNK_LOAD_DIST); // the product of the last two parameters must not be exceed 48, otherwise it is likely to be unplayable.
+CWire3DWorld::World world = CWire3DWorld::World(&camera, CHUNK_SIZE, CHUNK_LOAD_DIST); // the product of the last two parameters must not be exceed 48, otherwise it is likely to be unplayable.
 
 ButtonStates buttonStates = { 0 };
 

@@ -38,18 +38,22 @@ namespace CWire3DWorld {
 		void render();
 
 		void generate_chunk(int2 chunk_position);
+		void destroy_chunk(Chunk& chunk);
 		void set_chunk_generator(Chunk (*chunk_generator) (int2));
+		void set_chunk_destroyer(void(*chunk_destroyer) (Chunk&));
 
-		void set_triangle_renderer(void (*triangle_renderer) (Triangle));
+		void set_triangle_renderer(void (*triangle_renderer) (const Triangle&));
 
 	protected:
 		CWire3DEntities::Camera* camera;
 
 		Chunk (*chunk_generator) (int2);
 
-		void (*triangle_renderer) (Triangle);
+		void (*chunk_destroyer) (Chunk&);
+
+		void (*triangle_renderer) (const Triangle&);
 
 		std::vector<Chunk> loaded_chunks;
-		//std::vector<Node*> loaded_nodes;
+		std::vector<Node*> loaded_nodes;
 	};
 }

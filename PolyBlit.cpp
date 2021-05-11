@@ -86,7 +86,17 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
     return chunk;
 }
 
-void custom_triangle_renderer(CWire3DWorld::Triangle triangle) {
+void custom_chunk_destroyer(CWire3DWorld::Chunk &chunk) {
+    //printf("%i, %i\n", chunk.chunk_position.x, chunk.chunk_position.y);
+    for (uint16_t i = 0; i < chunk.triangles.size(); i += 2) {
+        delete chunk.triangles[i].p1;
+        delete chunk.triangles[i].p2;
+        delete chunk.triangles[i].p3;
+        delete chunk.triangles[i + 1].p3;
+    }
+}
+
+void custom_triangle_renderer(const CWire3DWorld::Triangle& triangle) {
     if (triangle.p1->projected_position.z > 0.0f && triangle.p2->projected_position.z > 0.0f && triangle.p3->projected_position.z > 0.0f) {
         screen.pen = Pen(triangle.colour.x, triangle.colour.y, triangle.colour.z);
 
@@ -108,6 +118,7 @@ void init() {
     set_screen_mode(ScreenMode::hires);
 
     world.set_chunk_generator(custom_chunk_generator);
+    world.set_chunk_destroyer(custom_chunk_destroyer);
     world.set_triangle_renderer(custom_triangle_renderer);
 
     camera.translate(float3{ 0.0f, 4.0f, 0.0f });
@@ -145,7 +156,7 @@ void render(uint32_t time) {
     screen.pen = { 255, 255, 255 };
     char buf[100];
     snprintf(buf, sizeof(buf), "Mem: %i + %i / %i", static_used, heap_used, total_ram);
-    screen.text(buf, minimal_font, { 0, 0 }, true, TextAlign::center_center);
+    screen.text(buf, minimal_font, { 10, 10 }, true, TextAlign::center_center);
 #endif
 
     screen.pen = Pen(100, 140, 200);

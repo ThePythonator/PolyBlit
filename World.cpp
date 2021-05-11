@@ -32,7 +32,14 @@ namespace CWire3DWorld {
 		}
 
 		// Remove chunks which are too far away
-		std::remove_if(loaded_chunks.begin(), loaded_chunks.end(), [chunks_to_load](Chunk &chunk) { return !std::count_if(chunks_to_load.begin(), chunks_to_load.end(), [chunk](int2 chunk_position) { return chunk.chunk_position == chunk_position; }); });
+		//std::remove_if(loaded_chunks.begin(), loaded_chunks.end(), [chunks_to_load](Chunk &chunk) { return !std::count_if(chunks_to_load.begin(), chunks_to_load.end(), [chunk](int2 chunk_position) { return chunk.chunk_position == chunk_position; }); });
+
+		// Move all chunks which need to be removed to the end
+		std::vector<Chunk>::iterator start = std::partition(loaded_chunks.begin(), loaded_chunks.end(), [chunks_to_load](Chunk& chunk) { return std::count_if(chunks_to_load.begin(), chunks_to_load.end(), [chunk](int2 chunk_position) { return chunk.chunk_position == chunk_position; }); });
+		// Deallocate chunks which will be removed
+		std::for_each(start, loaded_chunks.end(), [&](Chunk& chunk) { destroy_chunk(chunk); });
+		// Remove those chunks
+		loaded_chunks.erase(start, loaded_chunks.end());
 
 		for (Chunk chunk : loaded_chunks) {
 			for (uint16_t i = 0; i < chunk.triangles.size(); i++) {
@@ -48,7 +55,6 @@ namespace CWire3DWorld {
 			std::vector<Triangle> all_triangles;
 			for (Chunk chunk : loaded_chunks) {
 				all_triangles.insert(all_triangles.end(), chunk.triangles.begin(), chunk.triangles.end());
-using namespace linalg::aliases;
 			}
 
 			std::sort(all_triangles.begin(), all_triangles.end(), [&](const Triangle& a, const Triangle& b) {return std::min(length2(camera->get_position() - a.p1->position), std::min(length2(camera->get_position() - a.p2->position), length2(camera->get_position() - a.p3->position))) > std::min(length2(camera->get_position() - b.p1->position), std::min(length2(camera->get_position() - b.p2->position), length2(camera->get_position() - b.p3->position))); });
@@ -68,11 +74,21 @@ using namespace linalg::aliases;
 		}
 	}
 
+	void World::destroy_chunk(Chunk& chunk) {
+		if (chunk_destroyer) {
+			chunk_destroyer(chunk);
+		}
+	}
+
 	void World::set_chunk_generator(Chunk (*chunk_generator) (int2)) {
 		this->chunk_generator = chunk_generator;
 	}
 
-	void World::set_triangle_renderer(void (*triangle_renderer) (Triangle)) {
+	void World::set_chunk_destroyer(void(*chunk_destroyer) (Chunk&)) {
+		this->chunk_destroyer = chunk_destroyer;
+	}
+
+	void World::set_triangle_renderer(void (*triangle_renderer) (const Triangle&)) {
 		this->triangle_renderer = triangle_renderer;
 	}
 }

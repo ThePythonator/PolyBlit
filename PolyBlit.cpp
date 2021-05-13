@@ -10,6 +10,8 @@ const uint8_t CHUNK_LOAD_DIST = 4;
 const uint8_t CHUNK_SIZE = 8;
 #endif
 
+const float MOUNTAIN_LEVEL = 6.5f;
+
 uint2 display_size{ 320, 240 };
 
 CWire3DEntities::Camera camera = CWire3DEntities::Camera(display_size);
@@ -38,10 +40,10 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
 
             float h1, h2, h3, h4;
 
-            h1 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p1->position.x / 32.0, p1->position.z / 32.0, 1) - 0.4f) * 24.0f;
-            h2 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p2->position.x / 32.0, p2->position.z / 32.0, 1) - 0.4f) * 24.0f;
-            h3 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p3->position.x / 32.0, p3->position.z / 32.0, 1) - 0.4f) * 24.0f;
-            h4 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p4->position.x / 32.0, p4->position.z / 32.0, 1) - 0.4f) * 24.0f;
+            h1 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p1->position.x / 32.0, p1->position.z / 32.0, 1) - 0.4f) * 25.0f;
+            h2 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p2->position.x / 32.0, p2->position.z / 32.0, 1) - 0.4f) * 25.0f;
+            h3 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p3->position.x / 32.0, p3->position.z / 32.0, 1) - 0.4f) * 25.0f;
+            h4 = ((float)perlin.accumulatedOctaveNoise2D_0_1(p4->position.x / 32.0, p4->position.z / 32.0, 1) - 0.4f) * 25.0f;
 
             h1 = std::max(0.0f, h1);
             h2 = std::max(0.0f, h2);
@@ -61,17 +63,30 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
             t2.p2 = p3;
             t2.p3 = p4;
 
-            float c1 = h1 + h2 + h3;
-            float c2 = h2 + h3 + h4;
+            uint8_t c1 = (uint8_t)(h1 + h2 + h3);
+            uint8_t c2 = (uint8_t)(h2 + h3 + h4);
 
-            t1.colour = byte3{ (uint8_t)(rand() % 20 + 10), (uint8_t)(std::min(255.0f, 220.0f + c1)), (uint8_t)(c1 + 20) };
-            t2.colour = byte3{ (uint8_t)(rand() % 20 + 10), (uint8_t)(std::min(255.0f, 230.0f + c2)), (uint8_t)(c2 + 25) };
+            uint8_t s1 = std::min(255, 210 + c1);
+            uint8_t s2 = std::min(255, 220 + c2);
+
+            uint8_t s3 = std::min(255, c1 * 10);
+            uint8_t s4 = std::min(255, c2 * 10);
+
+            t1.colour = byte3{ (uint8_t)(c1 * 2), s1, (uint8_t)std::min(255, c1 * 4) };
+            t2.colour = byte3{ (uint8_t)(c2 * 2), s2, (uint8_t)std::min(255, c2 * 4) };
 
             if (!h1 && !h2 && !h3) {
-                t1.colour = byte3{ (uint8_t)(rand() % 10 + 5), (uint8_t)(rand() % 10 + 30), (uint8_t)(240) };
+                t1.colour = byte3{ (uint8_t)(rand() % 10 + 5), (uint8_t)(rand() % 5 + 30), (uint8_t)(245) };
             }
             if (!h2 && !h3 && !h4) {
-                t2.colour = byte3{ (uint8_t)(rand() % 10 + 5), (uint8_t)(rand() % 10 + 35), (uint8_t)(220) };
+                t2.colour = byte3{ (uint8_t)(rand() % 10 + 5), (uint8_t)(rand() % 5 + 35), (uint8_t)(230) };
+            }
+
+            if (h1 > MOUNTAIN_LEVEL && h2 > MOUNTAIN_LEVEL && h3 > MOUNTAIN_LEVEL) {
+                t1.colour = byte3{ s3, s3, s3 };
+            }
+            if (h2 > MOUNTAIN_LEVEL && h3 > MOUNTAIN_LEVEL && h4 > MOUNTAIN_LEVEL) {
+                t2.colour = byte3{ s4, s4, s4 };
             }
 
             triangles.push_back(t1);

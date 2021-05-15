@@ -83,6 +83,7 @@ namespace CWire3DEntities {
 	}
 
 	bool Camera::should_clip_sides(float x, float y) {
-		return (x < 0.0f || x > display_size.x || y < 0.0f || y > display_size.y);
+		return (x < -32.0f || x > display_size.x + 32.0f || y < -32.0f || y > display_size.y + 32.0f);
+		//return (x < 0.0f || x > display_size.x || y < 0.0f || y > display_size.y);
 	}
 }

@@ -21,4 +21,6 @@ namespace CWire3DUtilities {
 
 	float to_radians(float degrees);
 	float to_degrees(float radians);
+
+	bool in_triangle(float3 p, float3 t1, float3 t2, float3 t3);
 }

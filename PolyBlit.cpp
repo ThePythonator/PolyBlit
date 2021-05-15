@@ -23,7 +23,7 @@ ButtonStates buttonStates = { 0 };
 PerlinNoise::PerlinNoise perlin = PerlinNoise::PerlinNoise(31415);
 
 float get_terrain_height(float x, float z) {
-    return (float)(perlin.accumulatedOctaveNoise2D_0_1(x / 32.0, z / 32.0, 1) - 0.4f) * 26.0f;
+    return ((float)perlin.accumulatedOctaveNoise2D_0_1(x / 32.0, z / 32.0, 1) - 0.4f) * 26.0f;
 }
 
 CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {

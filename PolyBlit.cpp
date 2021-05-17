@@ -3,8 +3,8 @@
 // Globals
 
 #ifdef TARGET_32BLIT_HW
-const uint8_t CHUNK_LOAD_DIST = 3;
-const uint8_t CHUNK_SIZE = 4;
+const uint8_t CHUNK_LOAD_DIST = 2;
+const uint8_t CHUNK_SIZE = 8;
 #else
 const uint8_t CHUNK_LOAD_DIST = 5;
 const uint8_t CHUNK_SIZE = 8;
@@ -102,7 +102,8 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
 
     // Generate trees
     std::vector<float3> tree_bases;
-    for (int i = 0; i < rand() % (CHUNK_SIZE / 4); i++) {
+    uint8_t count = rand() % (CHUNK_SIZE / 4);//(rand() % (1 + CHUNK_SIZE / 2)
+    for (int i = 0; i < count; i++) {
         float3 base{ (float)(chunk_position.x * world.chunk_size + rand() % CHUNK_SIZE), 0.0f, (float)(chunk_position.y * world.chunk_size + rand() % CHUNK_SIZE) };
 
         base.y = get_terrain_height(base.x, base.z);
@@ -310,21 +311,21 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
 
 void custom_chunk_destroyer(CWire3DWorld::Chunk &chunk) {
     // Assumes nodes in chunk are not used anywhere else
-    std::vector<float3> positions_deleted;
+    std::vector<CWire3DWorld::Node*> nodes_deleted;
 
     for (CWire3DWorld::Triangle& triangle : chunk.triangles) {
-        if (!std::count(positions_deleted.begin(), positions_deleted.end(), triangle.p1->position)) {
-            positions_deleted.push_back(triangle.p1->position);
+        if (!std::count(nodes_deleted.begin(), nodes_deleted.end(), triangle.p1)) {
+            nodes_deleted.push_back(triangle.p1);
             delete triangle.p1;
         }
 
-        if (!std::count(positions_deleted.begin(), positions_deleted.end(), triangle.p2->position)) {
-            positions_deleted.push_back(triangle.p2->position);
+        if (!std::count(nodes_deleted.begin(), nodes_deleted.end(), triangle.p2)) {
+            nodes_deleted.push_back(triangle.p2);
             delete triangle.p2;
         }
 
-        if (!std::count(positions_deleted.begin(), positions_deleted.end(), triangle.p3->position)) {
-            positions_deleted.push_back(triangle.p3->position);
+        if (!std::count(nodes_deleted.begin(), nodes_deleted.end(), triangle.p3)) {
+            nodes_deleted.push_back(triangle.p3);
             delete triangle.p3;
         }
     }
@@ -355,8 +356,8 @@ void init() {
     world.set_chunk_destroyer(custom_chunk_destroyer);
     world.set_triangle_renderer(custom_triangle_renderer);
 
-    camera.translate(float3{ 0.0f, 4.0f, 0.0f });
-    camera.set_clip(float2{ 0.05f, 32.0f });
+    camera.translate(float3{ 0.0f, 8.0f, 0.0f });
+    camera.set_clip(float2{ 0.02f, 32.0f });
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -392,7 +393,6 @@ void render(uint32_t time) {
     snprintf(buf, sizeof(buf), "Mem: %i + %i / %i", static_used, heap_used, total_ram);
     screen.text(buf, minimal_font, { 5, 5 }, true, TextAlign::top_left);
 #endif
-
     screen.pen = Pen(100, 140, 200);
 }
 

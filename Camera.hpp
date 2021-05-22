@@ -32,7 +32,7 @@ namespace CWire3DEntities {
 		bool should_clip_sides(float x, float y);
 
 	protected:
-		uint8_t fov;
+		float fov;
 		float f;
 
 		float2 clip;

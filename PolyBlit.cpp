@@ -3,8 +3,8 @@
 // Globals
 
 #ifdef TARGET_32BLIT_HW
-const uint8_t CHUNK_LOAD_DIST = 2;
-const uint8_t CHUNK_SIZE = 8;
+const uint8_t CHUNK_LOAD_DIST = 3;
+const uint8_t CHUNK_SIZE = 4;
 #else
 const uint8_t CHUNK_LOAD_DIST = 5;
 const uint8_t CHUNK_SIZE = 8;

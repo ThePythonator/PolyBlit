@@ -9,7 +9,7 @@ namespace CWire3DEntities {
 		this->angle = angle;
 
 		this->fov = CWire3DUtilities::to_radians(fov);
-		f = display_size.x / (2 * tan(this->fov));
+		f = display_size.x / (2 * tan(this->fov / 2.0f));
 
 		this->flip_y = flip_y;
 

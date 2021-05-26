@@ -29,20 +29,31 @@ float get_terrain_height(float x, float z) {
 CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
     std::vector<CWire3DWorld::Triangle> triangles;
 
-    // Generate terrain
+    CWire3DWorld::Node* nodes[CHUNK_SIZE + 1][CHUNK_SIZE + 1];
+
+    // Generate Nodes
+    for (int z = 0; z < CHUNK_SIZE + 1; z++) {
+        for (int x = 0; x < CHUNK_SIZE + 1; x++) {
+            CWire3DWorld::Node* node = new CWire3DWorld::Node();
+
+            node->position = float3{ (float)(chunk_position.x * CHUNK_SIZE + x), 0.0f, (float)(chunk_position.y * CHUNK_SIZE + z) };
+            node->position.y = std::max(0.0f, get_terrain_height(node->position.x, node->position.z));
+
+            nodes[z][x] = node;
+        }
+    }
+
+    // Generate Triangles
     for (int z = 0; z < world.chunk_size; z++) {
         for (int x = 0; x < world.chunk_size; x++) {
             CWire3DWorld::Triangle t1, t2;
 
-            CWire3DWorld::Node* p1 = new CWire3DWorld::Node();
-            CWire3DWorld::Node* p2 = new CWire3DWorld::Node();
-            CWire3DWorld::Node* p3 = new CWire3DWorld::Node();
-            CWire3DWorld::Node* p4 = new CWire3DWorld::Node();
+            CWire3DWorld::Node* p1, * p2, * p3, * p4;
 
-            p1->position = float3{ (float)(chunk_position.x * world.chunk_size + x), 0.0f, (float)(chunk_position.y * world.chunk_size + z) };
-            p2->position = float3{ (float)(chunk_position.x * world.chunk_size + x + 1), 0.0f, (float)(chunk_position.y * world.chunk_size + z) };
-            p3->position = float3{ (float)(chunk_position.x * world.chunk_size + x), 0.0f, (float)(chunk_position.y * world.chunk_size + z + 1) };
-            p4->position = float3{ (float)(chunk_position.x * world.chunk_size + x + 1), 0.0f, (float)(chunk_position.y * world.chunk_size + z + 1) };
+            p1 = nodes[z][x];
+            p2 = nodes[z + 1][x];
+            p3 = nodes[z][x + 1];
+            p4 = nodes[z + 1][x + 1];
 
             float h1, h2, h3, h4;
 

@@ -8,6 +8,7 @@ namespace CWire3DWorld {
 		this->chunk_spawn_distance = chunk_spawn_dist;
 
 		chunk_generator = nullptr;
+		chunk_destroyer = nullptr;
 		triangle_renderer = nullptr;
 	}
 
@@ -24,13 +25,6 @@ namespace CWire3DWorld {
 			}
 		}
 
-		for (int2 chunk_position : chunks_to_load) {
-			if (!std::count_if(loaded_chunks.begin(), loaded_chunks.end(), [chunk_position](Chunk &chunk) { return chunk.chunk_position == chunk_position; })) {
-				// Chunk isn't in loaded_chunks, need to load chunk
-				generate_chunk(chunk_position);
-			}
-		}
-
 		// Remove chunks which are too far away
 		//std::remove_if(loaded_chunks.begin(), loaded_chunks.end(), [chunks_to_load](Chunk &chunk) { return !std::count_if(chunks_to_load.begin(), chunks_to_load.end(), [chunk](int2 chunk_position) { return chunk.chunk_position == chunk_position; }); });
 
@@ -40,6 +34,15 @@ namespace CWire3DWorld {
 		std::for_each(start, loaded_chunks.end(), [&](Chunk& chunk) { destroy_chunk(chunk); });
 		// Remove those chunks
 		loaded_chunks.erase(start, loaded_chunks.end());
+
+
+		// Create chunks
+		for (int2 chunk_position : chunks_to_load) {
+			if (!std::count_if(loaded_chunks.begin(), loaded_chunks.end(), [chunk_position](Chunk& chunk) { return chunk.chunk_position == chunk_position; })) {
+				// Chunk isn't in loaded_chunks, need to load chunk
+				generate_chunk(chunk_position);
+			}
+		}
 
 		for (Chunk chunk : loaded_chunks) {
 			for (uint16_t i = 0; i < chunk.triangles.size(); i++) {

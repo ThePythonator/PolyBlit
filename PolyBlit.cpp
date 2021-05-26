@@ -102,11 +102,17 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
 
     // Generate trees
     std::vector<float3> tree_bases;
-    uint8_t count = rand() % (CHUNK_SIZE / 4);//(rand() % (1 + CHUNK_SIZE / 2)
+    //uint8_t count = rand() % (1 + rand() % 2 + CHUNK_SIZE / 8);
+    uint8_t count = 1 + rand() % CHUNK_SIZE / 2;
     for (int i = 0; i < count; i++) {
         float3 base{ (float)(chunk_position.x * world.chunk_size + rand() % CHUNK_SIZE), 0.0f, (float)(chunk_position.y * world.chunk_size + rand() % CHUNK_SIZE) };
 
         base.y = get_terrain_height(base.x, base.z);
+
+        // Reduce number of trees:
+        if (rand() % 64 > CHUNK_SIZE) {
+            continue;
+        }
 
         // Don't allow trees to spawn in certain places.
 
@@ -136,7 +142,7 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
         CWire3DWorld::Node* p7 = new CWire3DWorld::Node();
         CWire3DWorld::Node* p8 = new CWire3DWorld::Node();
 
-        float height1 = 4.0f + (rand() % 15) / 10.0f;
+        float height1 = 3.0f + (rand() % 15) / 10.0f;
 
         p1->position = float3{ base.x - 0.4f, base.y, base.z - 0.4f };
         p2->position = float3{ base.x + 0.4f, base.y, base.z - 0.4f };
@@ -212,18 +218,19 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
         CWire3DWorld::Node* p15 = new CWire3DWorld::Node();
         CWire3DWorld::Node* p16 = new CWire3DWorld::Node();
 
-        float height2 = 3.0f + (rand() % 8) / 10.0f;
-        float height2_w = height2 / 2.0f - 0.3f;
+        float height2 = 4.0f + (rand() % 8) / 10.0f;
+        float height2_w = height2 / 2.5f - 0.2f;
+        float height2_w2 = height2 / 2.5f - 0.4f;
 
         p9->position = float3{ base.x - height2_w, base.y + height1, base.z - height2_w };
         p10->position = float3{ base.x + height2_w, base.y + height1, base.z - height2_w };
         p11->position = float3{ base.x - height2_w, base.y + height1, base.z + height2_w };
         p12->position = float3{ base.x + height2_w, base.y + height1, base.z + height2_w };
 
-        p13->position = float3{ base.x - height2_w, base.y + height1 + height2, base.z };
-        p14->position = float3{ base.x + height2_w, base.y + height1 + height2, base.z };
-        p15->position = float3{ base.x, base.y + height1 + height2, base.z - height2_w };
-        p16->position = float3{ base.x, base.y + height1 + height2, base.z + height2_w };
+        p13->position = float3{ base.x - height2_w2, base.y + height1 + height2, base.z };
+        p14->position = float3{ base.x + height2_w2, base.y + height1 + height2, base.z };
+        p15->position = float3{ base.x, base.y + height1 + height2, base.z - height2_w2 };
+        p16->position = float3{ base.x, base.y + height1 + height2, base.z + height2_w2 };
 
         CWire3DWorld::Triangle t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20;
 

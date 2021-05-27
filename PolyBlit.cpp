@@ -3,11 +3,13 @@
 // Globals
 
 #ifdef TARGET_32BLIT_HW
-const uint8_t CHUNK_LOAD_DIST = 3;
-const uint8_t CHUNK_SIZE = 4;
-#else
-const uint8_t CHUNK_LOAD_DIST = 5;
+const uint8_t CHUNK_LOAD_DIST = 2;
 const uint8_t CHUNK_SIZE = 8;
+const float VIEW_CUTOFF = 20.0f;
+#else
+const uint8_t CHUNK_LOAD_DIST = 7;
+const uint8_t CHUNK_SIZE = 8;
+const float VIEW_CUTOFF = 56.0f;
 #endif
 
 const float MOUNTAIN_LEVEL = 7.0f;
@@ -375,7 +377,7 @@ void init() {
     world.set_triangle_renderer(custom_triangle_renderer);
 
     camera.translate(float3{ 0.0f, 8.0f, 0.0f });
-    camera.set_clip(float2{ 0.02f, 32.0f });
+    camera.set_clip(float2{ 0.01f, VIEW_CUTOFF });
 }
 
 ///////////////////////////////////////////////////////////////////////////

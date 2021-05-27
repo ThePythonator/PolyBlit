@@ -5,6 +5,6 @@ splash:
   file: assets/no-image.png
 icon:
   file: assets/no-icon.png
-version: v0.1.3
+version: v0.1.4
 category: demo
 url: https://github.com/ThePythonator/PolyBlit

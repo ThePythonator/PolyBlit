@@ -85,8 +85,11 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
             uint8_t c1 = (uint8_t)(h1 + h2 + h3);
             uint8_t c2 = (uint8_t)(h2 + h3 + h4);
 
-            uint8_t s1 = std::min(255, 210 + c1);
-            uint8_t s2 = std::min(255, 220 + c2);
+            uint8_t s1 = std::min(255, 175 + c1 * 2);
+            uint8_t s2 = std::min(255, 185 + c2 * 2);
+
+            /*uint8_t s1 = std::min(255, 245 - c1 * 2);
+            uint8_t s2 = std::min(255, 255 - c2 * 2);*/
 
             uint8_t s3 = std::min(255, c1 * 9) - 3;
             uint8_t s4 = std::min(255, c2 * 9);
@@ -247,10 +250,10 @@ CWire3DWorld::Chunk custom_chunk_generator(int2 chunk_position) {
 
         CWire3DWorld::Triangle t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20;
 
-        byte3 c5{ (uint8_t)(50 + rand() % 15), (uint8_t)(180 + rand() % 20), (uint8_t)(40 + rand() % 20) };
-        byte3 c6{ (uint8_t)(50 + rand() % 15), (uint8_t)(180 + rand() % 20), (uint8_t)(40 + rand() % 20) };
-        byte3 c7{ (uint8_t)(50 + rand() % 15), (uint8_t)(180 + rand() % 20), (uint8_t)(40 + rand() % 20) };
-        byte3 c8{ (uint8_t)(50 + rand() % 15), (uint8_t)(180 + rand() % 20), (uint8_t)(40 + rand() % 20) };
+        byte3 c5{ (uint8_t)(50 + rand() % 15), (uint8_t)(155 + rand() % 20), (uint8_t)(40 + rand() % 20) };
+        byte3 c6{ (uint8_t)(50 + rand() % 15), (uint8_t)(155 + rand() % 20), (uint8_t)(40 + rand() % 20) };
+        byte3 c7{ (uint8_t)(50 + rand() % 15), (uint8_t)(155 + rand() % 20), (uint8_t)(40 + rand() % 20) };
+        byte3 c8{ (uint8_t)(50 + rand() % 15), (uint8_t)(155 + rand() % 20), (uint8_t)(40 + rand() % 20) };
 
         t9.colour = t13.colour = t17.colour = c5;
         t10.colour = t14.colour = t18.colour = c6;

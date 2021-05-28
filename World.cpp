@@ -44,7 +44,7 @@ namespace CWire3DWorld {
 			}
 		}
 
-		for (Chunk chunk : loaded_chunks) {
+		for (Chunk& chunk : loaded_chunks) {
 			for (uint16_t i = 0; i < chunk.triangles.size(); i++) {
 				chunk.triangles[i].p1->projected_position = camera->project_point(chunk.triangles[i].p1->position);
 				chunk.triangles[i].p2->projected_position = camera->project_point(chunk.triangles[i].p2->position);
@@ -56,7 +56,7 @@ namespace CWire3DWorld {
 	void World::render() {
 		if (triangle_renderer) {
 			std::vector<Triangle> all_triangles;
-			for (Chunk chunk : loaded_chunks) {
+			for (const Chunk& chunk : loaded_chunks) {
 				all_triangles.insert(all_triangles.end(), chunk.triangles.begin(), chunk.triangles.end());
 			}
 
